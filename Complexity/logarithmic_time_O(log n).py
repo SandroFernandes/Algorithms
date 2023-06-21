@@ -1,5 +1,6 @@
 import heapq
 
+
 # O(log n) is the best time complexity for search algorithms
 
 def binary_search(arr, target):
@@ -56,40 +57,41 @@ def inorder_traversal(root):
     inorder_traversal(root.right)
 
 
-# Create a binary search tree
-root = TreeNode(4)
-root.left = TreeNode(2)
-root.right = TreeNode(6)
-root.left.left = TreeNode(1)
-root.left.right = TreeNode(3)
-root.right.left = TreeNode(5)
-root.right.right = TreeNode(7)
+if __name__ == '__main__':
+    # Create a binary search tree
+    root = TreeNode(4)
+    root.left = TreeNode(2)
+    root.right = TreeNode(6)
+    root.left.left = TreeNode(1)
+    root.left.right = TreeNode(3)
+    root.right.left = TreeNode(5)
+    root.right.right = TreeNode(7)
 
-# Perform in-order traversal
-print("In-order traversal:")
-inorder_traversal(root)
+    # Perform in-order traversal
+    print("In-order traversal:")
+    inorder_traversal(root)
 
-# Create an empty heap
-heap = []
+    # Create an empty heap
+    heap = []
 
-# Insert elements into the heap
-heapq.heappush(heap, 4)
-heapq.heappush(heap, 1)
-heapq.heappush(heap, 7)
-heapq.heappush(heap, 3)
-heapq.heappush(heap, 2)
+    # Insert elements into the heap
+    heapq.heappush(heap, 4)
+    heapq.heappush(heap, 1)
+    heapq.heappush(heap, 7)
+    heapq.heappush(heap, 3)
+    heapq.heappush(heap, 2)
 
-print("Heap:", heap)
+    print("Heap:", heap)
 
-# Extract the minimum element from the heap
-min_element = heapq.heappop(heap)
-print("Minimum Element:", min_element)
+    # Extract the minimum element from the heap
+    min_element = heapq.heappop(heap)
+    print("Minimum Element:", min_element)
 
-# Peek at the minimum element without removing it
-min_element = heap[0]
-print("Peek at Minimum Element:", min_element)
-"""
-    Heap: [1, 2, 7, 4, 3]
-    Minimum Element: 1
-    Peek at Minimum Element: 2
-"""
+    # Peek at the minimum element without removing it
+    min_element = heap[0]
+    print("Peek at Minimum Element:", min_element)
+    """
+        Heap: [1, 2, 7, 4, 3]
+        Minimum Element: 1
+        Peek at Minimum Element: 2
+    """
