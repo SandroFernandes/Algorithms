@@ -4,7 +4,7 @@ import re
 
 
 def is_prime_re(n):
-    return re.match(r'^1?$|^(11+?)\1+$', '1' * n) == None
+    return re.match(r'^1?$|^(11+?)\1+$', '1' * n) is None
 
 
 if __name__ == '__main__':
