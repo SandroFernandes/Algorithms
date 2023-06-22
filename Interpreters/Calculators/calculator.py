@@ -103,6 +103,7 @@ class Calculator:
                 op1 = float(stack.pop())
                 op2 = float(stack.pop())
 
+                # noinspection PyCompatibility
                 match token:
                     case "^":
                         stack.push(op2 ** op1)
