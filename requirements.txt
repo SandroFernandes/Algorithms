@@ -2,3 +2,5 @@ matplotlib
 numpy
 seaborn
 mplcursors
+ply
+astor

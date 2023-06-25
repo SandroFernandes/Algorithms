@@ -1,5 +1,12 @@
+# This was way back to do it.
+# To simplify the code, we use the tokenize module to split the input into tokens.
+# The tokenizer itself will be more code than the calculator.
 # An infix to post fix calculator that uses a stack to evaluate expressions
-
+# can handle numbers and operators +, -, *, /, ^, (, )
+# no unary operators
+# no functions
+# no constants
+# The tokenizer can handle variables, but not the calculator
 
 import tokenize
 from io import StringIO
@@ -26,7 +33,6 @@ class Calculator:
 
         self.tokenize()
         self.infix_to_postfix()
-        self.postfix_to_prefix()
         self.evaluate_postfix()
 
     def __str__(self):
@@ -55,55 +61,40 @@ class Calculator:
                 stack.push(token)
 
             elif token == ")":
-                # Pop out all the operators from the stack and append them to
-                # postfix expression till an opening bracket "(" is found
 
                 while stack.peek() != "(":
                     self.postfix_tokens.append(stack.pop())
                 stack.pop()
 
             elif token in self.operators:
-                # Pop out the operators with higher precedence from the top of the
-                # stack and append them to the postfix expression before
-                # pushing the current operator onto the stack.
+
                 while stack and self.precedence[stack.peek()] >= self.precedence[token]:
                     self.postfix_tokens.append(stack.pop())
                 stack.push(token)
 
             else:
-                # Positions of the operands do not change in the postfix
-                # expression so append an operand as it is to the postfix expression
+
                 self.postfix_tokens.append(token)
-
-    def postfix_to_prefix(self):
-        """ Convert postfix expression to prefix expression """
-        reversed_postfix = self.postfix_tokens[::-1]
-
-        stack = Stack()
-        for token in reversed_postfix:
-            if token in self.operators:
-                stack.push(token)
-            else:
-                op2 = stack.pop()
-                op1 = stack.pop()
-                stack.push(token)
-                stack.push(op1)
-                stack.push(op2)
-
-        self.prefix_tokens = stack.dump()
 
         if not stack.is_empty():
             raise ValueError("Invalid expression")
+
+    def convert_to_number(self, token):
+        try:
+            return int(token)
+        except ValueError:
+            return float(token)
+        except ValueError:
+            raise ValueError(f"Invalid number {token}")
 
     def evaluate_postfix(self):
         stack = Stack()
         for token in self.postfix_tokens:
             if token in self.operators:
 
-                op1 = float(stack.pop())
-                op2 = float(stack.pop())
+                op1 = self.convert_to_number(stack.pop())
+                op2 = self.convert_to_number(stack.pop())
 
-                # noinspection PyCompatibility
                 match token:
                     case "^":
                         stack.push(op2 ** op1)
@@ -128,9 +119,6 @@ class Calculator:
     def postfix_expression(self):
         return self.postfix_tokens
 
-    def prefix_expression(self):
-        return self.prefix_tokens
-
 
 if __name__ == "__main__":
     expressions = [
@@ -141,12 +129,29 @@ if __name__ == "__main__":
         "10 * 2 + 6",
         "20*7-0 +(4-2*5)-10+40",
         "(12) + 3 * 4",
+        "3.14 + 2.71",
+        "2.71 * 10 + 3.14 * 20",
+        # the tokenizer can handle variables but the calculator can't
         # "A * B- (C + D) + E",
         # "(A + B) * (C -D)",
+
     ]
     for expression in expressions:
         exp = Calculator(expression)
-        print(exp)
-        print(exp.postfix_expression())
-        print(exp.value)
+        print(f'Expression:{" ".join(exp.postfix_expression())}')
+        print(f'Postfix expression:{" ".join(exp.postfix_expression())}')
+        print(f'Result:{exp.value}')
+        print()
+
+    while True:
+        exp = input("Enter an expression: ")
+        if exp == "quit":
+            break
+        try:
+            calc = Calculator(exp)
+            print(f'Expression:{" ".join(calc.postfix_expression())}')
+            print(f'Postfix expression:{" ".join(calc.postfix_expression())}')
+            print(f'Result:{calc.value}')
+        except ValueError as e:
+            print(e)
         print()
