@@ -1,4 +1,8 @@
 # simple lexer for sentences
+# this lexer is not complete, it is just an example of how to use ply.lex
+# to tokenize a sentence
+# the order is not considered, so the sentence "the cat is lazy" will be tokenized,
+# as well as "lazy cat is the" or "is the cat lazy"
 
 import ply.lex as lex
 
