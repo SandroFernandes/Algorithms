@@ -1,0 +1,156 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Grammar
+
+Rule 0     S' -> sentence
+Rule 1     sentence -> noun_phrase verb_phrase
+Rule 2     noun_phrase -> ARTICLE NOUN
+Rule 3     noun_phrase -> ARTICLE ADJECTIVE NOUN
+Rule 4     verb_phrase -> VERB
+Rule 5     verb_phrase -> VERB noun_phrase
+Rule 6     verb_phrase -> VERB ADVERB noun_phrase
+Rule 7     verb_phrase -> VERB PREPOSITION noun_phrase
+
+Terminals, with rules where they appear
+
+ADJECTIVE            : 3
+ADVERB               : 6
+ARTICLE              : 2 3
+NOUN                 : 2 3
+PREPOSITION          : 7
+VERB                 : 4 5 6 7
+error                : 
+
+Nonterminals, with rules where they appear
+
+noun_phrase          : 1 5 6 7
+sentence             : 0
+verb_phrase          : 1
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . sentence
+    (1) sentence -> . noun_phrase verb_phrase
+    (2) noun_phrase -> . ARTICLE NOUN
+    (3) noun_phrase -> . ARTICLE ADJECTIVE NOUN
+
+    ARTICLE         shift and go to state 3
+
+    sentence                       shift and go to state 1
+    noun_phrase                    shift and go to state 2
+
+state 1
+
+    (0) S' -> sentence .
+
+
+
+state 2
+
+    (1) sentence -> noun_phrase . verb_phrase
+    (4) verb_phrase -> . VERB
+    (5) verb_phrase -> . VERB noun_phrase
+    (6) verb_phrase -> . VERB ADVERB noun_phrase
+    (7) verb_phrase -> . VERB PREPOSITION noun_phrase
+
+    VERB            shift and go to state 5
+
+    verb_phrase                    shift and go to state 4
+
+state 3
+
+    (2) noun_phrase -> ARTICLE . NOUN
+    (3) noun_phrase -> ARTICLE . ADJECTIVE NOUN
+
+    NOUN            shift and go to state 6
+    ADJECTIVE       shift and go to state 7
+
+
+state 4
+
+    (1) sentence -> noun_phrase verb_phrase .
+
+    $end            reduce using rule 1 (sentence -> noun_phrase verb_phrase .)
+
+
+state 5
+
+    (4) verb_phrase -> VERB .
+    (5) verb_phrase -> VERB . noun_phrase
+    (6) verb_phrase -> VERB . ADVERB noun_phrase
+    (7) verb_phrase -> VERB . PREPOSITION noun_phrase
+    (2) noun_phrase -> . ARTICLE NOUN
+    (3) noun_phrase -> . ARTICLE ADJECTIVE NOUN
+
+    $end            reduce using rule 4 (verb_phrase -> VERB .)
+    ADVERB          shift and go to state 9
+    PREPOSITION     shift and go to state 10
+    ARTICLE         shift and go to state 3
+
+    noun_phrase                    shift and go to state 8
+
+state 6
+
+    (2) noun_phrase -> ARTICLE NOUN .
+
+    VERB            reduce using rule 2 (noun_phrase -> ARTICLE NOUN .)
+    $end            reduce using rule 2 (noun_phrase -> ARTICLE NOUN .)
+
+
+state 7
+
+    (3) noun_phrase -> ARTICLE ADJECTIVE . NOUN
+
+    NOUN            shift and go to state 11
+
+
+state 8
+
+    (5) verb_phrase -> VERB noun_phrase .
+
+    $end            reduce using rule 5 (verb_phrase -> VERB noun_phrase .)
+
+
+state 9
+
+    (6) verb_phrase -> VERB ADVERB . noun_phrase
+    (2) noun_phrase -> . ARTICLE NOUN
+    (3) noun_phrase -> . ARTICLE ADJECTIVE NOUN
+
+    ARTICLE         shift and go to state 3
+
+    noun_phrase                    shift and go to state 12
+
+state 10
+
+    (7) verb_phrase -> VERB PREPOSITION . noun_phrase
+    (2) noun_phrase -> . ARTICLE NOUN
+    (3) noun_phrase -> . ARTICLE ADJECTIVE NOUN
+
+    ARTICLE         shift and go to state 3
+
+    noun_phrase                    shift and go to state 13
+
+state 11
+
+    (3) noun_phrase -> ARTICLE ADJECTIVE NOUN .
+
+    VERB            reduce using rule 3 (noun_phrase -> ARTICLE ADJECTIVE NOUN .)
+    $end            reduce using rule 3 (noun_phrase -> ARTICLE ADJECTIVE NOUN .)
+
+
+state 12
+
+    (6) verb_phrase -> VERB ADVERB noun_phrase .
+
+    $end            reduce using rule 6 (verb_phrase -> VERB ADVERB noun_phrase .)
+
+
+state 13
+
+    (7) verb_phrase -> VERB PREPOSITION noun_phrase .
+
+    $end            reduce using rule 7 (verb_phrase -> VERB PREPOSITION noun_phrase .)
+
