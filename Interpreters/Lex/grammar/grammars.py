@@ -22,7 +22,7 @@ def t_ADJECTIVE(t):
 
 
 def t_VERB(t):
-    r'\b(is|was|jumped|ran|walked|talked|ate|slept|saw|loved|hated|eat)\b'  # I've added 'eat'
+    r'\b(is|was|jumped|ran|walked|talked|ate|slept|saw|loved|hated|eat)\b'
     return t
 
 
@@ -37,17 +37,13 @@ def t_PREPOSITION(t):
 
 
 # Ignore spaces
-t_ignore = ' \t'
+t_ignore = ' \t.,?!;:'
 
 
 # Error handling
 def t_error(t):
-    print("Invalid sentence")
+    print("Invalid character '%s'" % t.value[0])
     t.lexer.skip(1)
-
-
-# Build the lexer
-lexer = lex.lex()
 
 
 # Parser rules
@@ -60,6 +56,7 @@ def p_noun_phrase(p):
     '''noun_phrase : ARTICLE NOUN
                    | ARTICLE ADJECTIVE NOUN'''
     p[0] = p[1:]
+
 
 
 def p_verb_phrase(p):
@@ -77,6 +74,9 @@ def p_error(p):
     else:
         print("Valid sentence")
 
+
+# Build the lexer
+lexer = lex.lex()
 
 # Build the parser
 parser = yacc.yacc()

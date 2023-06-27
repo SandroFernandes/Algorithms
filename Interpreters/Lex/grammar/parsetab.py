@@ -27,11 +27,11 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> sentence","S'",1,None,None,None),
-  ('sentence -> noun_phrase verb_phrase','sentence',2,'p_sentence','grammars.py',45),
-  ('noun_phrase -> ARTICLE NOUN','noun_phrase',2,'p_noun_phrase','grammars.py',49),
-  ('noun_phrase -> ARTICLE ADJECTIVE NOUN','noun_phrase',3,'p_noun_phrase','grammars.py',50),
-  ('verb_phrase -> VERB','verb_phrase',1,'p_verb_phrase','grammars.py',54),
-  ('verb_phrase -> VERB noun_phrase','verb_phrase',2,'p_verb_phrase','grammars.py',55),
-  ('verb_phrase -> VERB ADVERB noun_phrase','verb_phrase',3,'p_verb_phrase','grammars.py',56),
-  ('verb_phrase -> VERB PREPOSITION noun_phrase','verb_phrase',3,'p_verb_phrase','grammars.py',57),
+  ('sentence -> noun_phrase verb_phrase','sentence',2,'p_sentence','grammars.py',51),
+  ('noun_phrase -> ARTICLE NOUN','noun_phrase',2,'p_noun_phrase','grammars.py',56),
+  ('noun_phrase -> ARTICLE ADJECTIVE NOUN','noun_phrase',3,'p_noun_phrase','grammars.py',57),
+  ('verb_phrase -> VERB','verb_phrase',1,'p_verb_phrase','grammars.py',63),
+  ('verb_phrase -> VERB noun_phrase','verb_phrase',2,'p_verb_phrase','grammars.py',64),
+  ('verb_phrase -> VERB ADVERB noun_phrase','verb_phrase',3,'p_verb_phrase','grammars.py',65),
+  ('verb_phrase -> VERB PREPOSITION noun_phrase','verb_phrase',3,'p_verb_phrase','grammars.py',66),
 ]
