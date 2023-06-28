@@ -1,11 +1,11 @@
 from pydub import AudioSegment
-from pydub.playback import play
 import numpy as np
-from scipy.io.wavfile import write
 import scipy.io.wavfile as wav
-from scipy.signal import find_peaks
-from time import sleep
+import wave
 import librosa
+from time import sleep
+import pygame
+
 
 INTERNATIONAL_MORSE_CODE = {'A': '.-',
                             'B': '-...',
@@ -94,33 +94,51 @@ def decode_sound(sound):
     print(f'Estimated Frequency: {estimated_frequency} Hz')
 
 
-def play_sound(frequency, duration_milliseconds):
-    # Convert duration to seconds
-    duration_seconds = duration_milliseconds / 1000.0
-
+def play_sound():
     # Choose a sample rate (how many measurements per second)
+    pygame.mixer.init(size=16)
     sample_rate = 44100
+    audio_data = np.empty(0)
 
-    # Generate the time values for one cycle of the sine wave
-    t = np.linspace(0, duration_seconds, int(sample_rate * duration_seconds), False)
+    for frequency, duration_milliseconds in [(700, 300), (0, 100), (700, 100), (0, 100), (700, 300)]:
+        print(f'Frequency: {frequency} Hz, Duration: {duration_milliseconds} ms')
+        # Convert ms to seconds
+        duration_seconds = duration_milliseconds / 1000.0
 
-    # Generate a sine wave of the desired frequency at these time values
-    note = np.sin(frequency * t * 2 * np.pi)
+        # Generate the time values for one cycle of the sine wave
+        t = np.linspace(0, duration_seconds, int(sample_rate * duration_seconds), False)
 
-    # Ensure that the highest value is in the 16-bit range
-    audio = note * (2 ** 15 - 1) / np.max(np.abs(note))
+        # Generate a sine wave of the desired frequency at these time values
+        note = np.sin(frequency * t * 2 * np.pi)
 
-    # Convert to 16-bit data
-    audio = audio.astype(np.int16)
+        # Add a check here to prevent division by zero
+        max_val = np.max(np.abs(note))
+        if max_val != 0:
+            # Ensure that the highest value is in 16-bit range
+            audio = note * (2 ** 15 - 1) / max_val
+        else:
+            audio = note
 
-    # Write the audio data to a .wav file
-    write("sound.wav", sample_rate, audio)
+        # Convert to 16-bit data
+        audio = audio.astype(np.int16)
+        audio_data = np.append(audio_data, audio)
 
+    sound = pygame.mixer.Sound(audio_data)
+    sound.play(0)
+    pygame.time.wait(int(sound.get_length() * 300))
+    # # Write the audio data to a .wav file
+    # with wave.open("sound.wav", "wb") as wav_file:
+    #     wav_file.setnchannels(2)  # Set the number of channels to 1 (mono)
+    #     wav_file.setsampwidth(2)  # Set the sample width to 2 bytes (16 bits)
+    #     wav_file.setframerate(sample_rate)  # Set the sample rate
+    #     wav_file.writeframes(audio_data)
+
+    # write("sound.wav", sample_rate, audio_data)
     # Load the audio file into a pydub.AudioSegment
     sound = AudioSegment.from_wav("sound.wav")
 
     # Play the audio file
-    play(sound)
+    # play(sound)
 
 
 def play_morse_code(morse_code):
@@ -149,11 +167,16 @@ def encode_morse_code(message):
 
 
 if __name__ == '__main__':
-    while True:
-        message = input('What message would you like to encode? ')
-        morse_code = encode_morse_code(message)
-        print(morse_code)
-        play_morse_code(morse_code)
-        decode_sound('sound.wav')
-        detect_pauses('sound.wav')
 
+    play_sound()
+    # while True:
+    #     pass
+    # frequency = int(input('Frequency: '))
+    # duration = int(input('Duration: '))
+    # play_sound(frequency, duration)
+    # message = input('What message would you like to encode? ')
+    # morse_code = encode_morse_code(message)
+    # print(morse_code)
+    # play_morse_code(morse_code)
+    # decode_sound('sound.wav')
+    # detect_pauses('sound.wav')
