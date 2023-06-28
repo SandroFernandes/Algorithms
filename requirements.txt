@@ -4,3 +4,7 @@ seaborn
 mplcursors
 ply
 astor
+simpleaudio
+pydub
+scipy
+librosa

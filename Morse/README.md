@@ -11,11 +11,7 @@
     Morse code frequencies are:
         700Hz for dots
         900Hz for dashes
-        100ms for dot duration
-        300ms for dash duration
-        100ms for space between dots and dashes
-        300ms for space between letters
-        700ms for space between words
+        
 
      Morse code pauses are:
         100ms for dot duration
