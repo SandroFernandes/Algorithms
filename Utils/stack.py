@@ -1,4 +1,6 @@
-# create a stack class
+# Stack class
+# who never wrote one, please don't throw the first stone.
+
 
 class Stack:
     def __init__(self):

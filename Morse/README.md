@@ -21,22 +21,15 @@
         700ms for space between words
 
 
-# Morse code reference
-    https://en.wikipedia.org/wiki/Morse_code
-
-
 # Morse code with a hammer
     https://www.youtube.com/watch?v=0Z8lbukvAzo
-
 # Morse code with a flashlight
     https://www.youtube.com/watch?v=ZfZRW4VhLHA
 # Morse code with a laser
     https://www.youtube.com/watch?v=ZfZRW4VhLHA
-# Morse code with a hammer
-    https://www.youtube.com/watch?v=0Z8lbukvAzo
-# morse code with a sound 
+# Morse code with a sound 
     https://www.youtube.com/watch?v=ZfZRW4VhLHA
-# morse code with a with your hand
+# Morse code with a with your hand
     https://www.youtube.com/watch?v=ZfZRW4VhLHA
 
     
