@@ -1,12 +1,9 @@
-from pydub import AudioSegment
 import numpy as np
-import scipy.io.wavfile as wav
-import wave
-import librosa
-from time import sleep
-import pygame
+import soundfile as sf
+from scipy.signal import find_peaks
+from scipy.fftpack import fft
 
-
+# Morse Code Dictionary
 INTERNATIONAL_MORSE_CODE = {'A': '.-',
                             'B': '-...',
                             'C': '-.-.',
@@ -45,116 +42,93 @@ INTERNATIONAL_MORSE_CODE = {'A': '.-',
                             '9': '----.',
                             '0': '-----'
                             }
-# Frequency in Hz of the sound, duration in ms
-DOTS = (700, 100)
-DASHES = (700, 300)
-# Pauses in seconds
-PAUSE_BETWEEN_DASH_DOT = 0.1
-PAUSE_BETWEEN_LETTERS = 0.300
-PAUSE_BETWEEN_WORDS = 0.700
+# Invert the dictionary
+MORSE_CODE_DICT = {value: key for key, value in INTERNATIONAL_MORSE_CODE.items()}
+
+# Frequency in Hz of the sound, duration in seconds
+DOTS = (700, 0.100)
+DASHES = (700, 0.300)
+
+PAUSE_BETWEEN_DASH_DOT = (0, 0.100)
+PAUSE_BETWEEN_LETTERS = (0, 0.300)
+PAUSE_BETWEEN_WORDS = (0, 0.700)
+
+SAMPLE_RATE = 44100
 
 
-def detect_pauses(filename):
-    audio_data, sample_rate = librosa.load(filename)
+def decode_morse_code_sound_file():
+    # Load the audio file
+    audio, _ = sf.read('sound.wav')
 
-    # Split audio data into chunks of 10 ms
-    # Size of chunks in samples
-    chunk_size = int(sample_rate / 100)
-    chunks = np.split(audio_data, np.arange(chunk_size, len(audio_data), chunk_size))
+    # find silence
+    silence = np.where(audio == 0)[0]
+    silence_diff = np.diff(silence)
 
-    # Calculate the amplitude of each chunk
-    amplitudes = [np.linalg.norm(chunk, ord=2) for chunk in chunks]
+    change_indices = np.where(silence_diff[:-1] != silence_diff[1:])[0] + 1
 
-    # Define a threshold for silence
-    threshold = 0.1
+    # add 0 first indexes
+    change_indices = np.insert(change_indices, 0, 0)
+    differences = np.diff(change_indices)
 
-    # Detect silence
-    silences = [amplitude < threshold for amplitude in amplitudes]
-
-    # Print the result
-    for i, is_silence in enumerate(silences):
-        print(f'Chunk {i}: {"Silence" if is_silence else "Sound"}')
-
-
-def decode_sound(sound):
-    filename = 'sound.wav'
-    sample_rate, audio_data = wav.read(filename)
-
-    # Calculate duration
-    duration = len(audio_data) / sample_rate
-    print(f'Duration: {duration} seconds')
-
-    # FFT
-    fft_result = np.fft.rfft(audio_data)
-    frequencies = np.fft.rfftfreq(audio_data.size, 1 / sample_rate)
-
-    # Get the frequency of the maximum absolute value in the FFT result
-    estimated_frequency = frequencies[np.argmax(np.abs(fft_result))]
-
-    print(f'Estimated Frequency: {estimated_frequency} Hz')
-
-
-def play_sound():
-    # Choose a sample rate (how many measurements per second)
-    pygame.mixer.init(size=16)
-    sample_rate = 44100
-    audio_data = np.empty(0)
-
-    for frequency, duration_milliseconds in [(700, 300), (0, 100), (700, 100), (0, 100), (700, 300)]:
-        print(f'Frequency: {frequency} Hz, Duration: {duration_milliseconds} ms')
-        # Convert ms to seconds
-        duration_seconds = duration_milliseconds / 1000.0
-
-        # Generate the time values for one cycle of the sine wave
-        t = np.linspace(0, duration_seconds, int(sample_rate * duration_seconds), False)
-
-        # Generate a sine wave of the desired frequency at these time values
-        note = np.sin(frequency * t * 2 * np.pi)
-
-        # Add a check here to prevent division by zero
-        max_val = np.max(np.abs(note))
-        if max_val != 0:
-            # Ensure that the highest value is in 16-bit range
-            audio = note * (2 ** 15 - 1) / max_val
+    code = ''
+    for i in range(len(differences)):
+        if differences[i] == 70:
+            code += '.'
+        elif differences[i] == 210:
+            code += '-'
         else:
-            audio = note
+            code += ' '
 
-        # Convert to 16-bit data
-        audio = audio.astype(np.int16)
-        audio_data = np.append(audio_data, audio)
-
-    sound = pygame.mixer.Sound(audio_data)
-    sound.play(0)
-    pygame.time.wait(int(sound.get_length() * 300))
-    # # Write the audio data to a .wav file
-    # with wave.open("sound.wav", "wb") as wav_file:
-    #     wav_file.setnchannels(2)  # Set the number of channels to 1 (mono)
-    #     wav_file.setsampwidth(2)  # Set the sample width to 2 bytes (16 bits)
-    #     wav_file.setframerate(sample_rate)  # Set the sample rate
-    #     wav_file.writeframes(audio_data)
-
-    # write("sound.wav", sample_rate, audio_data)
-    # Load the audio file into a pydub.AudioSegment
-    sound = AudioSegment.from_wav("sound.wav")
-
-    # Play the audio file
-    # play(sound)
+    print(code)
+    return code
 
 
-def play_morse_code(morse_code):
+def generate_sound(frequency, duration, sample_rate=44100):
+    t = np.linspace(0, duration, int(sample_rate * duration), False)
+    if frequency == 0:
+        signal = np.zeros_like(t)
+    else:
+        # generate sinusoidal audio signal
+        signal = 0.5 * np.sin(2 * np.pi * frequency * t)
+    return signal
+
+
+def write_code_file(freq_duration_pairs):
+    audio = np.array([])
+
+    # generate audio for each (frequency, duration) pair
+    for freq, duration in freq_duration_pairs:
+        sound = generate_sound(freq, duration, SAMPLE_RATE)
+        audio = np.concatenate((audio, sound))
+
+    # ensure that highest value is in 16-bit range
+    audio *= 32767 / np.max(np.abs(audio))
+
+    # convert to 16-bit data
+    audio = audio.astype(np.int16)
+
+    # save as wav file
+    sf.write('sound.wav', audio, SAMPLE_RATE)
+
+
+def code_frequencies_morse_code(morse_code):
+    frequency_pairs = []
     for letter in morse_code:
         for dot_dash in letter:
             match dot_dash:
                 case '.':
-                    play_sound(*DOTS)
-                    sleep(PAUSE_BETWEEN_DASH_DOT)
+                    frequency_pairs.append(DOTS)
+                    frequency_pairs.append(PAUSE_BETWEEN_DASH_DOT)
                 case '-':
-                    play_sound(*DASHES)
-                    sleep(PAUSE_BETWEEN_DASH_DOT)
+                    frequency_pairs.append(DASHES)
+                    frequency_pairs.append(PAUSE_BETWEEN_DASH_DOT)
                 case ' ':
-                    sleep(PAUSE_BETWEEN_WORDS)
+                    frequency_pairs.append(PAUSE_BETWEEN_WORDS)
                 case _:
                     raise ValueError(f'Invalid character {letter} in morse code')
+        frequency_pairs.append(PAUSE_BETWEEN_LETTERS)
+
+    return frequency_pairs
 
 
 def encode_morse_code(message):
@@ -167,16 +141,15 @@ def encode_morse_code(message):
 
 
 if __name__ == '__main__':
+    while True:
+        message_to_code = input('type quit to end!  Message? ')
+        if message_to_code == 'quit':
+            break
 
-    play_sound()
-    # while True:
-    #     pass
-    # frequency = int(input('Frequency: '))
-    # duration = int(input('Duration: '))
-    # play_sound(frequency, duration)
-    # message = input('What message would you like to encode? ')
-    # morse_code = encode_morse_code(message)
-    # print(morse_code)
-    # play_morse_code(morse_code)
-    # decode_sound('sound.wav')
-    # detect_pauses('sound.wav')
+        code = encode_morse_code(message_to_code)
+        frequencies_duration = code_frequencies_morse_code(code)
+        write_code_file(frequencies_duration)
+        print(frequencies_duration)
+
+        decoded = decode_morse_code_sound_file()
+        print(decoded)

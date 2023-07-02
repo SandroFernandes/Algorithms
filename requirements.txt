@@ -8,3 +8,4 @@ simpleaudio
 pydub
 scipy
 librosa
+soundfile
