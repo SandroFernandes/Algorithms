@@ -7,7 +7,7 @@ const.DOT = '.'
 const.DASH = '_'
 const.SPACE = ' '
 
-# Morse Code Dictionary
+# Morse Code Entry by letter
 INTERNATIONAL_MORSE_CODE = {'A': '._',
                             'B': '_...',
                             'C': '_._.',
@@ -51,15 +51,27 @@ INTERNATIONAL_MORSE_CODE = {'A': '._',
 MORSE_CODE_DICT = {value: key for key, value in INTERNATIONAL_MORSE_CODE.items()}
 
 MAX_CODE_LENGTH = max([len(code) for code in MORSE_CODE_DICT.keys()])
+
 # Frequency in Hz of the sound, duration in seconds
-DOTS = (700, 0.100)
-DASHES = (700, 0.300)
+FREQUENCY = 700
+DOTS = (FREQUENCY, 0.100)
+DASHES = (FREQUENCY, 0.300)
 
 PAUSE_BETWEEN_DASH_DOT = (0, 0.100)
 PAUSE_BETWEEN_LETTERS = (0, 0.300)
 PAUSE_BETWEEN_WORDS = (0, 0.700)
 
 SAMPLE_RATE = 44100
+
+# For a 700 Hz sound
+# 700 Hz * 0.100 s = 70 ?????
+DOT_DIFF = int(DOTS[0] * DOTS[1])
+# 700 Hz * 0.300 s = 210 ?????
+DASH_DIFF = int(DASHES[0] * DASHES[1])
+# 44100 * 0.100 = 4410
+END_OF_DOT_DASH_DIFF = int(PAUSE_BETWEEN_DASH_DOT[1] * SAMPLE_RATE)
+# 44100 * 0.300 = 13230 + 4410 = 17640
+END_OF_LETTER_DIFF = int(PAUSE_BETWEEN_LETTERS[1] * SAMPLE_RATE) + END_OF_DOT_DASH_DIFF
 
 
 def decode_morse_code_sound_file():
@@ -75,36 +87,39 @@ def decode_morse_code_sound_file():
     # add 0 first indexes
     change_indices = np.insert(change_indices, 0, 0)
     differences = np.diff(change_indices)
-    # append end of dash or dot
-    differences = np.append(differences, 4410)
+    # append an end of dash or dot
+    differences = np.append(differences, END_OF_DOT_DASH_DIFF)
     # append end of letter
-    differences = np.append(differences, 17640)
+    differences = np.append(differences, END_OF_LETTER_DIFF)
 
     code = ''
     letter_code = []
     for i in range(len(differences)):
         if differences[i] == 0:
             continue
-        if differences[i] == 70:
+        # dot
+        if differences[i] == DOT_DIFF:
             code += const.DOT
-        elif differences[i] == 210:
+        # dash
+        elif differences[i] == DASH_DIFF:
             code += const.DASH
-        elif differences[i] == 4410:
-            # end of dot or dash
+        # end of dot or dash
+        elif differences[i] == END_OF_DOT_DASH_DIFF:
             pass
-        elif differences[i] == 17640:
-            # end of a letter
+        # end of letter
+        elif differences[i] == END_OF_LETTER_DIFF:
             letter_code.append((MORSE_CODE_DICT[code], code))
             code = ''
         else:
             # end of a word
-            code = ''
+            letter_code.append((MORSE_CODE_DICT[code], code))
             letter_code.append((' ', ' '))
+            code = ''
 
     return letter_code
 
 
-def generate_sound(frequency, duration, sample_rate=44100):
+def generate_sound(frequency, duration, sample_rate=SAMPLE_RATE):
     t = np.linspace(0, duration, int(sample_rate * duration), False)
     if frequency == 0:
         signal = np.zeros_like(t)
@@ -160,12 +175,11 @@ def encode_morse_code(message):
     return morse_code
 
 
-def pretty_print(decoded):
-
+def pretty_print(legend):
     str_letters = ''
     str_codes = ''
     letter_spaces = (MAX_CODE_LENGTH - 1) * ' '
-    for letter, code in decoded:
+    for letter, code in legend:
         str_letters += letter + letter_spaces
         str_codes += code.ljust(MAX_CODE_LENGTH, ' ')
 
@@ -188,4 +202,3 @@ if __name__ == '__main__':
 
         decoded = decode_morse_code_sound_file()
         pretty_print(decoded)
-
