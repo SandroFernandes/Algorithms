@@ -34,3 +34,7 @@ includes information on the different types of nodes in the tree and how to trav
 
 Python AST Explorer: https://python-ast-explorer.com/ This is an online tool that allows you to explore the Abstract
 Syntax Tree for Python code. You can enter Python cod
+
+# Resources
+
+https://www.cs.cornell.edu/~asampson/blog/flattening.html
