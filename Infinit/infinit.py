@@ -7,9 +7,10 @@ import math
 # you can multiply it by 2, and it will still be infinity
 # you can divide it by 2, and it will still be infinity
 # logical operations with infinity
-# infinity is bigger than any number
+# is bigger than any number
 # infinity is equal to infinity, and this one mathematically is not true because there are different types of infinity
 # example map the numbers from 0 to 1 to the numbers from 0 to 2, and you will see that there are more numbers in the
+# interval from 0 to 1 than in the interval from 0 to 2
 
 
 inf = float('inf')

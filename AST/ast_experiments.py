@@ -1,5 +1,6 @@
 import ast
 import dis
+from math import log
 
 
 def show_code(code):
@@ -10,7 +11,7 @@ def show_code(code):
 
 
 # Create an AST representing a simple addition operation
-node = ast.parse("2 + 3", mode="eval")
+node = ast.parse("2 + 3 ** 2 + log(10) +", mode="eval")
 
 # Compile the AST into a code object
 compiled_code = compile(node, filename="<ast>", mode="eval")
@@ -20,7 +21,6 @@ show_code(compiled_code)
 
 # Evaluate the code object in the Python interpreter
 result = eval(compiled_code)
-
 
 # Output: 5
 print(result)

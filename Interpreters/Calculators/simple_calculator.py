@@ -79,13 +79,15 @@ class Calculator:
         if not stack.is_empty():
             raise ValueError("Invalid expression")
 
-    def convert_to_number(self, token):
+    @staticmethod
+    def convert_to_number(token):
         try:
             return int(token)
         except ValueError:
-            return float(token)
-        except ValueError:
-            raise ValueError(f"Invalid number {token}")
+            try:
+                return float(token)
+            except ValueError:
+                raise ValueError(f"Invalid number {token}")
 
     def evaluate_postfix(self):
         stack = Stack()

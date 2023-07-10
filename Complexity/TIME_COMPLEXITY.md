@@ -1,8 +1,15 @@
-# https://en.wikipedia.org/wiki/Time_complexity
-# base on https://en.wikipedia.org/wiki/Analysis_of_algorithms
-# make and example of each time complexity with graphs and maybe a table comparing them
-# by number of operations and time
-# could be a good  base for an article
+# Resources
+https://en.wikipedia.org/wiki/Time_complexity
+https://en.wikipedia.org/wiki/Analysis_of_algorithms
+
+# Algorithmic complexity
+Also known as time complexity or space complexity,
+refers to the computational complexity that describes the amount of computational
+resources (time and space) used by an algorithm as a function of the size of 
+the input to the program. 
+It is a concept in theoretical computer science and is used to understand the 
+efficiency of an algorithm, i.e., how its performance scales based on the size of the input.
+The Big O notation is commonly used to express this type of complexity.
 
 
 # constant time  O(1)

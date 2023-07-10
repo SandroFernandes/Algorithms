@@ -1,4 +1,3 @@
-import sys
 import wave
 import numpy as np
 import matplotlib.pyplot as plt
@@ -24,7 +23,7 @@ signal_array = np.frombuffer(signal, dtype=np.int16)
 l_channel = signal_array[0::2]
 r_channel = signal_array[1::2]
 
-times =  np.linspace(0, duration, num=len(l_channel))
+times = np.linspace(0, duration, num=len(l_channel))
 
 plt.figure(figsize=(15, 5))
 plt.plot(times, l_channel, color='blue')
