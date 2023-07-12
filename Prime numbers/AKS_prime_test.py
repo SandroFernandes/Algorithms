@@ -1,5 +1,5 @@
 # https://en.wikipedia.org/wiki/AKS_primality_test
-# does not use random numbers, but it very interesting and in po
+# does not use random numbers, but it's alluring and powerful
 from math import gcd
 
 

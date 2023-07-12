@@ -12,6 +12,7 @@ outcomes = {}
 # For each combination of dice rolls
 for dice1 in dice_rolls:
     for dice2 in dice_rolls:
+        
         # Calculate the sum of the dice
         roll_sum = dice1 + dice2
 
@@ -32,7 +33,7 @@ plt.grid(True)
 plt.show()
 
 # A heat map
-# Create a 6x6 matrix to store the outcomes
+# Creates a 6x6 matrix to store the outcomes
 outcomes = np.zeros((6, 6))
 
 # For each combination of dice rolls

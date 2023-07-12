@@ -20,11 +20,11 @@ def plot_distribution(rolls):
     plt.show()
 
 
-# Set the number of rolls you want to simulate
-dice_rolls = 100000
+# Set the number of rolls you want to simulate, bigger number will give more accurate results
+dice_rolls = 1_000_000
 
 # Simulate rolls
 total_rolls = simulate_rolls(dice_rolls)
 
 # Plot the distribution
-plot_distribution(total)
+plot_distribution(total_rolls)

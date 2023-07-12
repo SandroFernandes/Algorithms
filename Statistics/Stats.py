@@ -1,49 +1,59 @@
-from math import comb
 from fractions import Fraction
-from itertools import product
+import seaborn as sns
+import pandas as pd
+from collections import Counter
 
 
-def roll_dices(number_of_dices, show_steps=False):
-    odd = 0
-    even = 0
-    possibilities = [range(1, 7) for _ in range(number_of_dices)]
-    total_outcomes = 6**number_of_dices
-    for outcome in product(*possibilities):
+def roll_dices(number_of_dices):
+    odd = even = 0
+    total_outcomes = 6 ** number_of_dices
+
+    for outcome in product(range(1, 7), repeat=number_of_dices):
         product_of_outcome = 1
         for number in outcome:
             product_of_outcome *= number
-        if product_of_outcome % 2 == 1:
+        if product_of_outcome % 2:
             odd += 1
         else:
             even += 1
-    print('Probability of odd:', Fraction(odd, total_outcomes))
-    print('Probability of even:', Fraction(even, total_outcomes))
+
+    return odd, even, total_outcomes
 
 
-print('Whats the probability of getting 2 clubs of a deck of cards with replacement ?')
-total_cards = 52
-total_clubs = 13
+def show_probability():
+    for rolls in range(2, 6):
+        result = roll_dices(rolls)
 
-prob_club = Fraction(total_clubs / total_cards)
-prob_2_clubs = prob_club * prob_club
+        # express the result as a fraction
+        odd_probability = Fraction(result[0], result[2])
+        even_probability = Fraction(result[1], result[2])
+        print(f'What’s the probability that the product of {rolls} rolls of a d6 is odd? 2 rolls? {odd_probability}')
+        print(f'What’s the probability that the product of {rolls} rolls of a d6 is even? 2 rolls? {even_probability}')
 
-print("Probability of getting 2 clubs with replacement:", prob_2_clubs)
 
-print('Whats the probability of getting 2 clubs of a deck of cards without replacement ?')
+import matplotlib.pyplot as plt
+import numpy as np
+from itertools import product
 
-total_cards = 52
-total_clubs = 13
 
-# Calculate the probability
-prob_2_clubs = comb(total_clubs, 2) / comb(total_cards, 2)
-prob_2_clubs = Fraction(prob_2_clubs).limit_denominator()
+def plot_dice_product_distribution(n):
 
-print("Probability of getting 2 clubs without replacement:", prob_2_clubs)
-roll_dices(2)
+    # Create a 6x6 matrix with the product of two dice outcomes
 
-print('What’s the probability that the product of 2 rolls of a d6 is odd? 3 rolls?')
-roll_dices(3)
-print('What’s the probability that the product of 2 rolls of a d6 is odd? 4 rolls?')
-roll_dices(4)
-print('What’s the probability that the product of 2 rolls of a d6 is odd? 5 rolls?')
-roll_dices(5)
+    products = np.outer(range(1, 7), range(1, 7))
+
+    # Create a heatmap
+    sns.heatmap(products, annot=True, fmt="d", cmap='viridis', xticklabels=range(1, 7), yticklabels=range(1, 7))
+
+    # Set the title and labels
+    plt.title('Product of outcomes for two dice')
+    plt.xlabel('Die 1')
+    plt.ylabel('Die 2')
+
+    # Show the plot
+    plt.show()
+
+
+if __name__ == '__main__':
+    # show_probability()
+    plot_dice_product_distribution(2)

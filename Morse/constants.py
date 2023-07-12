@@ -51,7 +51,7 @@ MORSE_CODE_DICT = {value: key for key, value in INTERNATIONAL_MORSE_CODE.items()
 MAX_CODE_LENGTH = max([len(code) for code in MORSE_CODE_DICT.keys()]) + 1
 
 # Frequency in Hz of the sound, duration in seconds
-FREQUENCY = 500
+FREQUENCY = 700
 DOTS = (FREQUENCY, 0.100)
 DASHES = (FREQUENCY, 0.300)
 

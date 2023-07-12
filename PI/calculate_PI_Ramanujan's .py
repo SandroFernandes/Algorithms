@@ -17,4 +17,4 @@ def compute_pi(digits):
 
 
 if __name__ == '__main__':
-    print(compute_pi(100))
+    print(compute_pi(10))

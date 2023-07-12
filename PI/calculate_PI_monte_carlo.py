@@ -17,4 +17,4 @@ def estimate_pi(num_samples):
 
 
 if __name__ == '__main__':
-    print(estimate_pi(100000000))
+    print(estimate_pi(100_000_000))
